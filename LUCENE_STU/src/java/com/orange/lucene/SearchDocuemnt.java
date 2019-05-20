@@ -3,10 +3,12 @@ package com.orange.lucene;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
@@ -26,11 +28,27 @@ public class SearchDocuemnt {
 		
 		IndexSearcher indexSearch = new IndexSearcher(indexReader);
 		
-		TermQuery query = new TermQuery(new Term("name","EduAccountManage_info.log"));
+		TermQuery query = new TermQuery(new Term("content","error"));
 		
 		TopDocs topDos = indexSearch.search(query, 5);
 		
 		System.out.println("总共的查询结果：" + topDos.totalHits);
+		
+		ScoreDoc[] scoreDocArr = topDos.scoreDocs;
+		
+		for(ScoreDoc scoreDoce : scoreDocArr) {
+			int docId = scoreDoce.doc;
+			
+			float score = scoreDoce.score;
+			
+			System.out.println(scoreDoce);
+			
+			Document document = indexSearch.doc(docId);
+			System.out.println(document.get("name"));
+			System.out.println("=============================");
+		}
+		
+		indexReader.close();
 		
 	}
 	
